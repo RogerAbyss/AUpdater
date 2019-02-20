@@ -31,6 +31,16 @@ lib lint
 fastlane ios lib_push
 ```
 lib push
+### ios trunk_login
+```
+fastlane ios trunk_login
+```
+trunk登录
+### ios trunk_push
+```
+fastlane ios trunk_push
+```
+trunk推送
 
 ----
 
