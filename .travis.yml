@@ -1,0 +1,30 @@
+# references:
+# * https://www.objc.io/issues/6-build-tools/travis-ci/
+# * https://github.com/supermarin/xcpretty#usage
+
+osx_image: xcode10.1
+language: objective-c
+cache:
+  cocoapods: true
+  bundler: true
+  directories:
+    - /home/travis/.rvm/
+podfile: Example/Podfile
+gemfile: Example/Gemfile
+branches:
+  only:
+    - master
+before_install:
+  - openssl aes-256-cbc -K $encrypted_d6d0cd6f6f44_key -iv $encrypted_d6d0cd6f6f44_iv -in .travis/id_rsa.enc -out ~/.ssh/id_rsa -d
+  - sh ssh.sh
+  - gem install bundler --no-rdoc --no-ri --no-document --quiet
+  - gem install fastlane --no-rdoc --no-ri --no-document --quiet
+  - gem install cocoapods --no-rdoc --no-ri --no-document --quiet # Since Travis is not always on latest version
+  - bundle install --gemfile=Example/Gemfile
+  - bundle exec pod install --project-directory=Example
+script:
+  - set -o pipefail && xcodebuild test -enableCodeCoverage YES -workspace Example/AocFirPatcher.xcworkspace -scheme AocFirPatcher-Example -destination 'platform=iOS Simulator,name=iPhone 6,OS=11.2' ONLY_ACTIVE_ARCH=NO | xcpretty
+  - bundle exec fastlane lib_lint
+  - bundle exec jazzy --config jazzy.yaml
+after_success:
+  - bundle exec fastlane lib_push

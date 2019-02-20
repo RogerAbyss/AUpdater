@@ -1,0 +1,6 @@
+framework module Pods_AUpdater_Example {
+  umbrella header "Pods-AUpdater_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
